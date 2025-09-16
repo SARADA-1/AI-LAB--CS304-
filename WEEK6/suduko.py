@@ -1,6 +1,5 @@
 import time
 import random
-import copy
 import pandas as pd
 import tracemalloc
 from copy import deepcopy
