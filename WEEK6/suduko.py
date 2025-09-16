@@ -87,13 +87,13 @@ def solve_simple_backtracking(bo):
             bo[row][col] = 0
     return False
 
-def solve_mrv(board):
+def solve_mrv(bo):
     min_r = min_c = None
     min_options = None
     for r in range(9):
         for c in range(9):
-            if board[r][c] == 0:
-                opts = candidates(board, r, c)
+            if bo[r][c] == 0:
+                opts = candidates(bo, r, c)
                 if min_options is None or len(opts) < len(min_options):
                     min_options = opts
                     min_r, min_c = r, c
@@ -106,25 +106,25 @@ def solve_mrv(board):
         return True 
 
     for n in list(min_options):
-        board[min_r][min_c] = n
-        if solve_mrv(board):
+        bo[min_r][min_c] = n
+        if solve_mrv(bo):
             return True
-        board[min_r][min_c] = 0
+        bo[min_r][min_c] = 0
     return False
 
-def candidates(board, r, c):
+def candidates(bo, r, c):
     opts = set(range(1,10))
-    opts -= set(board[r])
-    opts -= {board[i][c] for i in range(9)}
+    opts -= set(bo[r])
+    opts -= {bo[i][c] for i in range(9)}
     sr, sc = (r//3)*3, (c//3)*3
     for i in range(sr, sr+3):
         for j in range(sc, sc+3):
-            opts.discard(board[i][j])
+            opts.discard(bo[i][j])
     return opts
 
 
-def measure(func, board):
-    b = deepcopy(board)
+def measure(func, bo):
+    b = deepcopy(bo)
     tracemalloc.start()
     t0 = time.perf_counter()
     solved = func(b)
@@ -139,7 +139,7 @@ def measure(func, board):
     }
 
 
-difficulty = 40 
+difficulty = 60 
 puzzle_board = generate_sudoku(difficulty)
 
 print(f"Generated Sudoku Puzzle (Difficulty: {difficulty} empty cells)")
