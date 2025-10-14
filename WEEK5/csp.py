@@ -108,7 +108,7 @@ def validate_coloring(adj, coloring):
     return True
 
 
-sizes = [100, 200, 500, 1000, 5000]   
+sizes = [100]   
 results=[]
 
 for n in sizes:
@@ -117,6 +117,7 @@ for n in sizes:
     csp = CSP(list(adj.keys()), domains, adj)
     res = backtracking_search(csp)
     sol = res["solution"]
+    print(sol)
     success = validate_coloring(adj, sol)
     colors_used = len(set(sol.values())) if sol else None
     results.append({

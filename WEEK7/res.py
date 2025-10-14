@@ -7,7 +7,7 @@ Clause = FrozenSet[str]
 
 
 #AST BUILDER
-def build_tree(formula: str) -> AST:
+def build_tree(formula):
     s = ''.join(formula.split())
     if len(s) == 0:
         raise ValueError("Empty formula")
@@ -38,7 +38,7 @@ def build_tree(formula: str) -> AST:
 
 
 #CNF CONVERSION
-def elim_imp(ast: AST) -> AST:
+def elim_imp(ast):
     if isinstance(ast, str):
         return ast
     op = ast[0]
@@ -56,7 +56,7 @@ def elim_imp(ast: AST) -> AST:
     return ast
 
 
-def push_not(ast: AST) -> AST:
+def push_not(ast):
     if isinstance(ast, str):
         return ast
     op = ast[0]
@@ -78,7 +78,7 @@ def push_not(ast: AST) -> AST:
     return ast
 
 
-def literal_to_str(node: AST) -> str:
+def literal_to_str(node):
     if isinstance(node, str):
         return node
     if isinstance(node, tuple) and node[0] == '~' and isinstance(node[1], str):
@@ -86,7 +86,7 @@ def literal_to_str(node: AST) -> str:
     raise ValueError("Not a literal: " + repr(node))
 
 
-def cnf_clauses_from_nnf(ast: AST) -> List[Set[str]]:
+def cnf_clauses_from_nnf(ast):
     # returns list of clauses (as sets of literal strings)
     if isinstance(ast, str) or (isinstance(ast, tuple) and ast[0] == '~' and isinstance(ast[1], str)):
         return [{literal_to_str(ast)}]
@@ -105,7 +105,7 @@ def cnf_clauses_from_nnf(ast: AST) -> List[Set[str]]:
     raise ValueError("Unexpected NNF node")
 
 
-def cnf_convert(ast: AST) -> Set[Clause]:
+def cnf_convert(ast):
     step1 = elim_imp(ast)
     step2 = push_not(step1)
     clause_sets = cnf_clauses_from_nnf(step2)
@@ -113,7 +113,7 @@ def cnf_convert(ast: AST) -> Set[Clause]:
 
 
 #SIMPLIFY HELPERS
-def is_tautology(cl: Clause) -> bool:
+def is_tautology(cl):
     for lit in cl:
         comp = lit[1:] if lit.startswith("~") else "~" + lit
         if comp in cl:
@@ -121,7 +121,7 @@ def is_tautology(cl: Clause) -> bool:
     return False
 
 
-def simplify_clauses(clauses: Set[Clause]) -> Set[Clause]:
+def simplify_clauses(clauses):
     non_taut = {c for c in clauses if not is_tautology(c)}
     reduced = set(non_taut)
     # remove subsumed clauses
@@ -133,7 +133,7 @@ def simplify_clauses(clauses: Set[Clause]) -> Set[Clause]:
     return reduced
 
 
-def simplify_active_sets(active_clauses: Set[Clause]) -> Set[Clause]:
+def simplify_active_sets(active_clauses):
     # active-only simplification (tautology removal + subsumption)
     non_taut = {c for c in active_clauses if not is_tautology(c)}
     reduced = set(non_taut)
@@ -146,7 +146,7 @@ def simplify_active_sets(active_clauses: Set[Clause]) -> Set[Clause]:
 
 
 #RESOLUTION HELPERS
-def resolve_pair(c1: Clause, c2: Clause) -> Set[Clause]:
+def resolve_pair(c1, c2):
     res = set()
     for lit in c1:
         comp = lit[1:] if lit.startswith("~") else "~" + lit
@@ -156,15 +156,15 @@ def resolve_pair(c1: Clause, c2: Clause) -> Set[Clause]:
     return res
 
 
-def clause_to_string(cl: Clause) -> str:
+def clause_to_string(cl):
     if not cl:
         return "NIL"
     lits = sorted(cl, key=lambda x: (x.lstrip('~'), x.startswith('~')))
     return " v ".join(lits)
 
 
-def print_assignment_style(records: Dict[int, Tuple[Clause, Optional[Tuple[int, int]]]],
-                           usable_end: int, sos_end: int) -> None:
+def print_assignment_style(records,
+                           usable_end, sos_end) -> None:
     for i in range(1, usable_end):
         cl, _ = records[i]
         print(f"{i}. {clause_to_string(cl)}")
@@ -181,9 +181,9 @@ def print_assignment_style(records: Dict[int, Tuple[Clause, Optional[Tuple[int, 
 
 
 #PL-resolution with SOS
-def pl_resolution(premises: List[str], goal: str,
-                  strategy: int = 0,
-                  max_steps: int = 200000, max_clauses: int = 200000):
+def pl_resolution(premises, goal,
+                  strategy= 0,
+                  max_steps= 200000, max_clauses=200000):
     # Convert premises to CNF clauses
     usable_clauses: Set[Clause] = set()
     for f in premises:
@@ -231,7 +231,7 @@ def pl_resolution(premises: List[str], goal: str,
     steps = 0
     max_seen = len(clause_idx)
 
-    def add_new_clause(new_c: Clause, parents: Tuple[int, int]) -> Optional[int]:
+    def add_new_clause(new_c, parents):
         nonlocal next_idx, max_seen
         if is_tautology(new_c):
             return None
@@ -279,7 +279,7 @@ def pl_resolution(premises: List[str], goal: str,
 
 
 #Input parsing (from a string)
-def read_input_from_string(s: str) -> Tuple[List[str], str, int]:
+def read_input_from_string(s):
     raw = s
     lines = [ln.strip() for ln in raw.splitlines() if ln.strip() != ""]
     if not lines:
@@ -308,7 +308,7 @@ def read_input_from_string(s: str) -> Tuple[List[str], str, int]:
     return premises, goal, strategy
 
 
-def solve_from_string(input_str: str):
+def solve_from_string(input_str):
     """
     Run the solver on an input string (same format as SAMPLE_INPUT).
     Prints the solver output and returns the resolution tuple:
