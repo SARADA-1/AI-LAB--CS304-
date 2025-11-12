@@ -2,8 +2,6 @@ import time, random, heapq
 from collections import deque
 import pandas as pd
 
-
-
 #Graph Generation
 def generate_weighted_graph(n, extra_edges_factor=2, weight_range=(1, 10)):
     adj = {i: [] for i in range(n)}

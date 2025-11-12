@@ -327,8 +327,8 @@ def solve_from_string(input_str):
 
 SAMPLE_INPUT = """
 1
-((~P & Q) <-> (R|S)) | (~P-> S)
-((~S&R)->(Q&P))|((P&R)|Q)
+(A&B)<->C
+C->B
 """
 print("Running embedded SAMPLE_INPUT:\n" + SAMPLE_INPUT)
 solve_from_string(SAMPLE_INPUT)

@@ -1,6 +1,7 @@
 import heapq
 import itertools
 import random
+import pandas as pd
 
 def swap(state, pos1, pos2):
     state_ = list(state)
@@ -135,24 +136,25 @@ def generate_random_state():
 initial_state = generate_random_state()
 goal_state = (1,2,3,4,5,6,7,8,0)
 
-print("____A* SOLUTION____")    
+data = {"Algorithm Name":[],"Solution":[],"Total_no_of_moves":[]}
 if a_star(initial_state, goal_state, manhattan) is not None:
     states, moves = a_star(initial_state, goal_state, manhattan)
-    print(f'Initial State: {states[0]}')
-    for i in range(len(moves)):
-        print(f'Move: {moves[i]}')
-        print(f'State: {states[i+1]}')
-    print(f'Total Moves = {len(moves)}')
+    data["Algorithm Name"].append("A*")
+    data["Solution"].append("Found")
+    data["Total_no_of_moves"].append(len(moves))
 else:
-    print("No solution.")
-
-print("____RBFS SOLUTION____")    
+    data["Algorithm Name"].append("A*")
+    data["Solution"].append("Not Found")
+    data["Total_no_of_moves"].append("NAN")
 if rbfs(initial_state, goal_state, manhattan) is not None:
     states, moves = rbfs(initial_state, goal_state, manhattan)
-    print(f'Initial State: {states[0]}')
-    for i in range(len(moves)):
-        print(f'Move: {moves[i]}')
-        print(f'State: {states[i+1]}')
-    print(f'Total Moves = {len(moves)}')
+    data["Algorithm Name"].append("RBFS")
+    data["Solution"].append("Found")
+    data["Total_no_of_moves"].append(len(moves))
 else:
-    print("No solution.")
+    data["Algorithm Name"].append("RBFS")
+    data["Solution"].append("Not Found")
+    data["Total_no_of_moves"].append("NAN")
+
+df = pd.DataFrame(data)
+print(df)

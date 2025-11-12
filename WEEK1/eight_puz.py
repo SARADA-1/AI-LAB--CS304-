@@ -1,5 +1,5 @@
-
 from collections import deque
+import pandas as pd
 
 def swap(state,pos1,pos2):
         state_ = list(state)
@@ -78,25 +78,32 @@ def dfs_puzzle(initial_state,goal_state):
 initial_state = (1,2,3,4,0,5,6,7,8)
 goal_state = (1,2,3,4,5,6,7,8,0)
 
-print("____DFS SOLUTION____")    
+data = {"Algorithm Name":[],"Solution":[],"Total_no_of_moves":[]}
 if dfs_puzzle(initial_state,goal_state) is not None:
     states, moves = dfs_puzzle(initial_state,goal_state)
-    print(f'Initial State: {states[0]}')
-    for i in range(len(moves)):
-        print(f'Move: {moves[i]}')
-        print(f'State: {states[i+1]}')
-    print(f'Total Moves = {len(moves)}')
+    data["Algorithm Name"].append("DFS")
+    data["Solution"].append("Found")
+    data["Total_no_of_moves"].append(len(moves))
 else:
-    print("No solution")
-    
+    data["Algorithm Name"].append("DFS")
+    data["Solution"].append("Not Found")
+    data["Total_no_of_moves"].append("NAN")
 
-print("____BFS SOLUTION____")
 if bfs_puzzle(initial_state,goal_state) is not None:
     states, moves = bfs_puzzle(initial_state,goal_state)
-    print(f'Initial State: {states[0]}')
-    for i in range(len(moves)):
-        print(f'Move: {moves[i]}')
-        print(f'State: {states[i+1]}')
-    print(f'Total Moves = {len(moves)}')
+    data["Algorithm Name"].append("BFS")
+    data["Solution"].append("Found")
+    data["Total_no_of_moves"].append(len(moves))
 else:
-    print("No solution")
+    data["Algorithm Name"].append("BFS")
+    data["Solution"].append("Not Found")
+    data["Total_no_of_moves"].append("NAN")
+
+df = pd.DataFrame(data)
+print(df)
+
+
+
+
+
+
